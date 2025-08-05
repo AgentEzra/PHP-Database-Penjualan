@@ -1,6 +1,9 @@
 <?php
 include 'connect.php';
 
+$query = "SELECT * FROM tabel_kopi";
+$result = mysqli_query($connect, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -21,14 +24,20 @@ include 'connect.php';
             <th>WAKTU</th>
         </tr>
         
+        <?php while($row = mysqli_fetch_assoc($result)): ?>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><?=$row['id']; ?></td>
+            <td><?=$row['nama_kopi']; ?></td>
+            <td><?=$row['harga']; ?></td>
+            <td><?=$row['total_cup']; ?></td>
+            <td><?=$row['total_harga']; ?></td>
+            <td><?=$row['waktu_terjual']; ?></td>
+
+            
+            <td><a href="edit.php?id=<?=$row['id'];?>">Edit</a></td>
+            <td><a href="delete.php?id=<?=$row['id'];?>">Delete</a></td>
         </tr>
+        <?php endwhile; ?>
     </table>
 
     <a href="create.php">To Create</a>
