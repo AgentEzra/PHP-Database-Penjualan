@@ -73,10 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         </select>
 
         <label for="harga_kopi">Harga</label>
-        <input type="number" name="harga_kopi" id="harga_kopi" value="<?=$hargaKopi ?>" readonly placeholder="Harga">
+        <input type="number" name="harga_kopi" id="harga_kopi" value="<?=$hargaKopi ?>" readonly placeholder="Harga" >
 
         <label for="total_cup">Total Cup</label>
-        <input type="number" name="total_cup" id="total_cup" placeholder="Total Cup">
+        <input type="number" name="total_cup" id="total_cup" placeholder="Total Cup" required>
 
         <label for="total_harga">Total Harga</label>
         <input type="number" name="total_harga" id="total_harga" value="<?=$totalHarga ?>" readonly placeholder="Total Harga">

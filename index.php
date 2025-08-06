@@ -24,9 +24,12 @@ $result = mysqli_query($connect, $query);
             <th>WAKTU</th>
         </tr>
         
-        <?php while($row = mysqli_fetch_assoc($result)): ?>
+        <?php 
+            $id = 0;
+            while($row = mysqli_fetch_assoc($result)): $id++
+            ?>
         <tr>
-            <td><?=$row['id']; ?></td>
+            <td><?=$id; ?></td>
             <td><?=$row['nama_kopi']; ?></td>
             <td><?=$row['harga']; ?></td>
             <td><?=$row['total_cup']; ?></td>
