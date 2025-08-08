@@ -61,11 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input Page</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="wrapper">
     <form method="post">
         <label for="nama_kopi">Nama Kopi</label>
         <select name="nama_kopi" id="nama_kopi">
+            <option value="option" disabled selected>Option</option>
             <option value="americano">Americano</option>
             <option value="cappucino">Cappucino</option>
             <option value="brown">Brown Sugar</option>
@@ -84,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         <button>Submit</button>
     </form>
 
-    <a href="index.php">To Index</a>
+        <a href="index.php">To Index</a>
+    </div>
 
     <script src="script.js"></script>
 </body>
