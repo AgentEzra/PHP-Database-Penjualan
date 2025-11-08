@@ -3,20 +3,15 @@ include 'connect.php';
 
 $success = '';
 $error = '';
-$setValueTotal = 0;
 
 $namaKopi = '';
 $hargaKopi = '';
 $totalCup = '';
 $totalHarga = '';
-$waktuTerjual = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     $namaKopi = $_POST['nama_kopi'];
-    $hargaKopi = $_POST['harga_kopi'];
     $totalCup = $_POST['total_cup'];
-    $totalHarga = $_POST['total_harga'];
-    $waktuTerjual = date('Y-m-d H:i:s');
 
     switch ($namaKopi){
         case 'americano':
@@ -31,28 +26,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         case 'caramel':
             $hargaKopi = 14000;
             break;
-
         default:
-        $error = 'pokoke error, tanyain atmin aja';
-        exit($error);
+            $error = 'pokoke error, tanyain atmin aja';
+            exit($error);
     }
 
     $totalHarga = $totalCup * $hargaKopi;
 
     try {
-        $query = "INSERT INTO tabel_kopi (nama_kopi, harga, total_cup, total_harga, waktu_terjual) VALUES ('$namaKopi', '$hargaKopi', '$totalCup', '$totalHarga', '$waktuTerjual')";
+        // First, get or create the product
+        $productQuery = "SELECT id FROM products WHERE nama_kopi = '$namaKopi'";
+        $productResult = mysqli_query($connect, $productQuery);
+        
+        if(mysqli_num_rows($productResult) == 0) {
+            // Insert new product if it doesn't exist
+            $insertProduct = "INSERT INTO products (nama_kopi, harga) VALUES ('$namaKopi', '$hargaKopi')";
+            mysqli_query($connect, $insertProduct);
+            $productId = mysqli_insert_id($connect);
+        } else {
+            $productData = mysqli_fetch_assoc($productResult);
+            $productId = $productData['id'];
+        }
 
-        $result = mysqli_query($connect, $query);
+        // Get the default customer (walk-in)
+        $customerQuery = "SELECT id FROM customers WHERE nama_customer = 'Walk-in Customer'";
+        $customerResult = mysqli_query($connect, $customerQuery);
+        $customerData = mysqli_fetch_assoc($customerResult);
+        $customerId = $customerData['id'];
+
+        // Create order
+        $orderQuery = "INSERT INTO orders (customer_id, total_harga) VALUES ('$customerId', '$totalHarga')";
+        mysqli_query($connect, $orderQuery);
+        $orderId = mysqli_insert_id($connect);
+
+        // Create order item
+        $orderItemQuery = "INSERT INTO order_items (order_id, product_id, quantity, subtotal) VALUES ('$orderId', '$productId', '$totalCup', '$totalHarga')";
+        mysqli_query($connect, $orderItemQuery);
 
         $success = 'berhasil menambah data';
 
     } catch (mysqli_sql_exception $e){
         echo "eror pokoknya";
-
-        $error = 'gagal deh pokoknya, tanya atmin suruh benerin';
+        $error = 'gagal deh pokoknya, tanya atmin suruh benerin: ' . $e->getMessage();
     }
 } 
-
 ?>
 
 <!DOCTYPE html>

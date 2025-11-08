@@ -2,7 +2,7 @@
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$db = 'kopi_db';
+$db = 'sukas_kopi';
 
 $connect = new mysqli ($host, $user, $password, $db);
 

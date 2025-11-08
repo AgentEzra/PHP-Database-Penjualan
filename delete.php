@@ -3,8 +3,13 @@ include 'connect.php';
 
 $id = $_GET['id'];
 
-$query = "DELETE FROM tabel_kopi WHERE id = '$id'";
-$result = mysqli_query($connect, $query);
+// First delete order items
+$deleteItems = "DELETE FROM order_items WHERE order_id = '$id'";
+mysqli_query($connect, $deleteItems);
 
-header ('location: index.php');
+// Then delete the order
+$deleteOrder = "DELETE FROM orders WHERE id = '$id'";
+mysqli_query($connect, $deleteOrder);
+
+header('location: index.php');
 ?>
