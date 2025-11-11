@@ -1,5 +1,9 @@
 <?php
 include 'connect.php';
+include 'session.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin(); // Only admin can edit
+
 
 $postNamaKopi = '';
 $postHargaKopi = '';
