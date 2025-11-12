@@ -4,6 +4,26 @@ include 'session.php';
 redirectIfNotLoggedIn();
 redirectIfNotAdmin();
 
+// Handle export to Excel
+if (isset($_GET['export_users'])) {
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="users_export_' . date('Y-m-d') . '.xls"');
+    
+    $query = "SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC";
+    $result = mysqli_query($connect, $query);
+    
+    echo "ID\tUsername\tEmail\tRole\tCreated At\n";
+    
+    while($row = mysqli_fetch_assoc($result)) {
+        echo $row['id'] . "\t";
+        echo $row['username'] . "\t";
+        echo $row['email'] . "\t";
+        echo $row['role'] . "\t";
+        echo $row['created_at'] . "\n";
+    }
+    exit();
+}
+
 // Handle user deletion
 if (isset($_GET['delete_id'])) {
     $delete_id = mysqli_real_escape_string($connect, $_GET['delete_id']);
@@ -44,6 +64,7 @@ $result = mysqli_query($connect, $query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - Coffee Shop</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleDashboard.css">
 </head>
 <body>
     <div class="container">
@@ -56,14 +77,20 @@ $result = mysqli_query($connect, $query);
     </div>
 
     <div class="navigation">
-    <a href="dashboard.php">Dashboard</a>
-    <a href="index.php">Orders</a>
-    <?php if (isAdmin()): ?>
-        <a href="users.php">Manage Users</a>
-        <a href="create.php">Create Order</a>
-    <?php endif; ?>
-</div>
+        <a href="dashboard.php">Dashboard</a>
+        <a href="index.php">Orders</a>
+        <?php if (isAdmin()): ?>
+            <a href="users.php">Manage Users</a>
+            <a href="create.php">Create Order</a>
+        <?php endif; ?>
+    </div>
 
+    <!-- Export Button -->
+    <div style="margin: 20px 0;">
+        <a href="users.php?export_users=1" class="export-btn">
+            Export to Excel
+        </a>
+    </div>
 
     <table border="1" cellpadding="10" cellspacing="0">
         <tr>
@@ -105,7 +132,5 @@ $result = mysqli_query($connect, $query);
         <?php endwhile; ?>
     </table>
     </div>
-
-    
 </body>
 </html>

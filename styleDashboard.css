@@ -430,3 +430,11 @@
         .btn-full {
             width: 100%;
         }
+
+        .export-btn {
+            background: linear-gradient(135deg, #8B4513, #D2691E); 
+            color: white; 
+            padding: 10px 15px; 
+            text-decoration: none; 
+            border-radius: 25px;
+        }

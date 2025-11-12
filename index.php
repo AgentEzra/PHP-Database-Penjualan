@@ -2,6 +2,40 @@
 include 'connect.php';
 include 'session.php';
 redirectIfNotLoggedIn();
+
+// Handle export to Excel for orders
+if (isset($_GET['export_orders'])) {
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="orders_export_' . date('Y-m-d') . '.xls"');
+    
+    $query = "SELECT 
+                o.id as order_id,
+                p.nama_kopi,
+                p.harga,
+                oi.quantity as total_cup,
+                o.total_harga,
+                o.waktu_terjual
+              FROM orders o
+              JOIN order_items oi ON o.id = oi.order_id
+              JOIN products p ON oi.product_id = p.id
+              ORDER BY o.waktu_terjual DESC";
+    $result = mysqli_query($connect, $query);
+    
+    echo "ID\tNama Kopi\tHarga\tTotal Cup\tTotal Harga\tWaktu Terjual\n";
+    
+    $id = 0;
+    while($row = mysqli_fetch_assoc($result)) {
+        $id++;
+        echo $id . "\t";
+        echo $row['nama_kopi'] . "\t";
+        // Remove "Rp " and commas for clean numeric values
+        echo $row['harga'] . "\t"; // Raw number without formatting
+        echo $row['total_cup'] . "\t";
+        echo $row['total_harga'] . "\t"; // Raw number without formatting
+        echo $row['waktu_terjual'] . "\n";
+    }
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,6 +45,7 @@ redirectIfNotLoggedIn();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page - Coffee Shop</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleDashboard.css">
 </head>
 <body>
     <div class="container">
@@ -23,20 +58,27 @@ redirectIfNotLoggedIn();
         </div>
 
         <div class="navigation">
-    <a href="dashboard.php">Dashboard</a>
-    <a href="index.php">Orders</a>
+            <a href="dashboard.php">Dashboard</a>
+            <a href="index.php">Orders</a>
 
-    <?php if (isUser()): ?>
-            <a href="contact.php">Contact</a>
+            <?php if (isUser()): ?>
+                <a href="contact.php">Contact</a>
             <?php endif; ?>
 
-    <?php if (isAdmin()): ?>
-        <a href="users.php">Manage Users</a>
-        <a href="create.php">Create Order</a>
-    <?php endif; ?>
-</div>
+            <?php if (isAdmin()): ?>
+                <a href="users.php">Manage Users</a>
+                <a href="create.php">Create Order</a>
+            <?php endif; ?>
+        </div>
 
         <?php if (isAdmin()): ?>
+        <!-- Export Button for Orders -->
+        <div style="margin: 20px 0;">
+            <a href="index.php?export_orders=1" class="export-btn">
+                Export to Excel
+            </a>
+        </div>
+
         <table>
             <thead>
                 <tr>
