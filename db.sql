@@ -1,7 +1,7 @@
--- Table 1: Products (kopi)
+-- Table 1: Products (food)
 CREATE TABLE products (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nama_kopi VARCHAR(50) NOT NULL,
+    nama_makanan VARCHAR(50) NOT NULL,
     harga INT NOT NULL
 );
 
@@ -32,7 +32,6 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
-
 
 -- Table: Users for authentication
 CREATE TABLE users (

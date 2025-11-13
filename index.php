@@ -10,9 +10,9 @@ if (isset($_GET['export_orders'])) {
     
     $query = "SELECT 
                 o.id as order_id,
-                p.nama_kopi,
+                p.nama_makanan,
                 p.harga,
-                oi.quantity as total_cup,
+                oi.quantity as total_porsi,
                 o.total_harga,
                 o.waktu_terjual
               FROM orders o
@@ -21,17 +21,16 @@ if (isset($_GET['export_orders'])) {
               ORDER BY o.waktu_terjual DESC";
     $result = mysqli_query($connect, $query);
     
-    echo "ID\tNama Kopi\tHarga\tTotal Cup\tTotal Harga\tWaktu Terjual\n";
+    echo "ID\tNama Makanan\tHarga\tTotal Porsi\tTotal Harga\tWaktu Terjual\n";
     
     $id = 0;
     while($row = mysqli_fetch_assoc($result)) {
         $id++;
         echo $id . "\t";
-        echo $row['nama_kopi'] . "\t";
-        // Remove "Rp " and commas for clean numeric values
-        echo $row['harga'] . "\t"; // Raw number without formatting
-        echo $row['total_cup'] . "\t";
-        echo $row['total_harga'] . "\t"; // Raw number without formatting
+        echo $row['nama_makanan'] . "\t";
+        echo $row['harga'] . "\t";
+        echo $row['total_porsi'] . "\t";
+        echo $row['total_harga'] . "\t";
         echo $row['waktu_terjual'] . "\n";
     }
     exit();
@@ -43,14 +42,13 @@ if (isset($_GET['export_orders'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page - Coffee Shop</title>
+    <title>Main Page - Food Shop</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="styleDashboard.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>☕ Cafe Ngoding</h1>
+            <h1>🍜 Rayhan's FoodShop</h1>
             <div class="user-info">
                 Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 <a href="logout.php">Logout</a>
@@ -83,9 +81,9 @@ if (isset($_GET['export_orders'])) {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>NAMA KOPI</th>
+                    <th>NAMA MAKANAN</th>
                     <th>HARGA</th>
-                    <th>TOTAL CUP</th>
+                    <th>TOTAL PORSI</th>
                     <th>TOTAL HARGA</th>
                     <th>WAKTU</th>
                     <th>EDIT</th>
@@ -96,9 +94,9 @@ if (isset($_GET['export_orders'])) {
                 <?php 
                 $query = "SELECT 
                             o.id as order_id,
-                            p.nama_kopi,
+                            p.nama_makanan,
                             p.harga,
-                            oi.quantity as total_cup,
+                            oi.quantity as total_porsi,
                             o.total_harga,
                             o.waktu_terjual
                           FROM orders o
@@ -111,9 +109,9 @@ if (isset($_GET['export_orders'])) {
                 ?>
                 <tr>
                     <td><?=$id; ?></td>
-                    <td><?=$row['nama_kopi']; ?></td>
+                    <td><?=$row['nama_makanan']; ?></td>
                     <td>Rp <?=number_format($row['harga']); ?></td>
-                    <td><?=$row['total_cup']; ?></td>
+                    <td><?=$row['total_porsi']; ?></td>
                     <td>Rp <?=number_format($row['total_harga']); ?></td>
                     <td><?=$row['waktu_terjual']; ?></td>
                     <td><a href="edit.php?id=<?=$row['order_id'];?>">Edit</a></td>
@@ -125,7 +123,7 @@ if (isset($_GET['export_orders'])) {
         
         <?php else: ?>
         <div class="user-welcome">
-            <h2>Welcome to Coffee Shop! ☕</h2>
+            <h2>Welcome to Food Shop! 🍜</h2>
             <p>You are logged in as a regular user. Only administrators can manage orders.</p>
             <p>Feel free to browse around, but you won't be able to modify any data.</p>
         </div>

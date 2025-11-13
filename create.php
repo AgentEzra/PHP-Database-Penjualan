@@ -7,43 +7,43 @@ redirectIfNotAdmin(); // Only admin can create orders
 $success = '';
 $error = '';
 
-$namaKopi = '';
-$hargaKopi = '';
-$totalCup = '';
+$namaMakanan = '';
+$hargaMakanan = '';
+$totalPorsi = '';
 $totalHarga = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $namaKopi = $_POST['nama_kopi'];
-    $totalCup = $_POST['total_cup'];
+    $namaMakanan = $_POST['nama_makanan'];
+    $totalPorsi = $_POST['total_porsi'];
 
-    switch ($namaKopi){
-        case 'americano':
-            $hargaKopi = 8000;
+    switch ($namaMakanan){
+        case 'ichiraku_ramen':
+            $hargaMakanan = 18000;
             break;
-        case 'cappucino':
-            $hargaKopi = 10000;
+        case 'pasta_carbonara':
+            $hargaMakanan = 16000;
             break;
-        case 'brown':
-            $hargaKopi = 12000;
+        case 'samyang_noodle':
+            $hargaMakanan = 12000;
             break;
-        case 'caramel':
-            $hargaKopi = 14000;
+        case 'mie_ayam':
+            $hargaMakanan = 12000;
             break;
         default:
-            $error = 'Invalid coffee selection';
+            $error = 'Invalid food selection';
             exit($error);
     }
 
-    $totalHarga = $totalCup * $hargaKopi;
+    $totalHarga = $totalPorsi * $hargaMakanan;
 
     try {
         // First, get or create the product
-        $productQuery = "SELECT id FROM products WHERE nama_kopi = '$namaKopi'";
+        $productQuery = "SELECT id FROM products WHERE nama_makanan = '$namaMakanan'";
         $productResult = mysqli_query($connect, $productQuery);
         
         if(mysqli_num_rows($productResult) == 0) {
             // Insert new product if it doesn't exist
-            $insertProduct = "INSERT INTO products (nama_kopi, harga) VALUES ('$namaKopi', '$hargaKopi')";
+            $insertProduct = "INSERT INTO products (nama_makanan, harga) VALUES ('$namaMakanan', '$hargaMakanan')";
             mysqli_query($connect, $insertProduct);
             $productId = mysqli_insert_id($connect);
         } else {
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $orderId = mysqli_insert_id($connect);
 
         // Create order item
-        $orderItemQuery = "INSERT INTO order_items (order_id, product_id, quantity, subtotal) VALUES ('$orderId', '$productId', '$totalCup', '$totalHarga')";
+        $orderItemQuery = "INSERT INTO order_items (order_id, product_id, quantity, subtotal) VALUES ('$orderId', '$productId', '$totalPorsi', '$totalHarga')";
         mysqli_query($connect, $orderItemQuery);
 
         $success = 'Order created successfully!';
@@ -79,13 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Order - Coffee Shop</title>
+    <title>Create Order - Food Shop</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>☕ Create New Order</h1>
+            <h1>🍜 Create New Order</h1>
             <div class="user-info">
                 Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 <a href="logout.php">Logout</a>
@@ -112,24 +112,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
             <form method="post">
                 <div class="form-group">
-                    <label for="nama_kopi">Nama Kopi</label>
-                    <select name="nama_kopi" id="nama_kopi" required>
-                        <option value="" disabled selected>Select Coffee Type</option>
-                        <option value="americano" <?= $namaKopi == 'americano' ? 'selected' : '' ?>>Americano</option>
-                        <option value="cappucino" <?= $namaKopi == 'cappucino' ? 'selected' : '' ?>>Cappucino</option>
-                        <option value="brown" <?= $namaKopi == 'brown' ? 'selected' : '' ?>>Brown Sugar</option>
-                        <option value="caramel" <?= $namaKopi == 'caramel' ? 'selected' : '' ?>>Caramel Latte</option>
+                    <label for="nama_makanan">Nama Makanan</label>
+                    <select name="nama_makanan" id="nama_makanan" required>
+                        <option value="" disabled selected>Select Food Type</option>
+                        <option value="ichiraku_ramen" <?= $namaMakanan == 'ichiraku_ramen' ? 'selected' : '' ?>>Ichiraku Ramen</option>
+                        <option value="pasta_carbonara" <?= $namaMakanan == 'pasta_carbonara' ? 'selected' : '' ?>>Pasta Carbonara</option>
+                        <option value="samyang_noodle" <?= $namaMakanan == 'samyang_noodle' ? 'selected' : '' ?>>Samyang Noodle</option>
+                        <option value="mie_ayam" <?= $namaMakanan == 'mie_ayam' ? 'selected' : '' ?>>Mie Ayam</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="harga_kopi">Harga</label>
-                    <input type="number" name="harga_kopi" id="harga_kopi" value="<?= $hargaKopi ?>" readonly placeholder="Harga">
+                    <label for="harga_makanan">Harga</label>
+                    <input type="number" name="harga_makanan" id="harga_makanan" value="<?= $hargaMakanan ?>" readonly placeholder="Harga">
                 </div>
 
                 <div class="form-group">
-                    <label for="total_cup">Total Cup</label>
-                    <input type="number" name="total_cup" id="total_cup" value="<?= $totalCup ?>" placeholder="Total Cup" required min="1">
+                    <label for="total_porsi">Total Porsi</label>
+                    <input type="number" name="total_porsi" id="total_porsi" value="<?= $totalPorsi ?>" placeholder="Total Porsi" required min="1">
                 </div>
 
                 <div class="form-group">
@@ -145,37 +145,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     <script>
         // JavaScript to update prices dynamically
-        document.getElementById('nama_kopi').addEventListener('change', function() {
-            const coffeeType = this.value;
+        document.getElementById('nama_makanan').addEventListener('change', function() {
+            const foodType = this.value;
             let price = 0;
             
-            switch(coffeeType) {
-                case 'americano':
-                    price = 8000;
+            switch(foodType) {
+                case 'ichiraku_ramen':
+                    price = 18000;
                     break;
-                case 'cappucino':
-                    price = 10000;
+                case 'pasta_carbonara':
+                    price = 16000;
                     break;
-                case 'brown':
+                case 'samyang_noodle':
                     price = 12000;
                     break;
-                case 'caramel':
-                    price = 14000;
+                case 'mie_ayam':
+                    price = 12000;
                     break;
                 default:
                     price = 0;
             }
             
-            document.getElementById('harga_kopi').value = price;
+            document.getElementById('harga_makanan').value = price;
             calculateTotal();
         });
         
-        document.getElementById('total_cup').addEventListener('input', calculateTotal);
+        document.getElementById('total_porsi').addEventListener('input', calculateTotal);
         
         function calculateTotal() {
-            const price = parseInt(document.getElementById('harga_kopi').value) || 0;
-            const cups = parseInt(document.getElementById('total_cup').value) || 0;
-            const total = price * cups;
+            const price = parseInt(document.getElementById('harga_makanan').value) || 0;
+            const portions = parseInt(document.getElementById('total_porsi').value) || 0;
+            const total = price * portions;
             
             document.getElementById('total_harga').value = total;
         }
