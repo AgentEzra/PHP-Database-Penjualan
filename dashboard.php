@@ -26,13 +26,14 @@ date_default_timezone_set('Asia/Jakarta');
 
         <div class="navigation">
             <a href="dashboard.php">Dashboard</a>
-            <a href="index.php">Orders</a>
-
+            <a href="order.php">Order</a>
+            
             <?php if (isUser()): ?>
-            <a href="contact.php">Contact</a>
-            <?php endif; ?>
-
-            <?php if (isAdmin()): ?>
+                <a href="contact.php">Contact</a>
+                <?php endif; ?>
+                
+                <?php if (isAdmin()): ?>
+                <a href="index.php">Manage Orders</a>
                 <a href="users.php">Manage Users</a>
                 <a href="create.php">Create Order</a>
             <?php endif; ?>
